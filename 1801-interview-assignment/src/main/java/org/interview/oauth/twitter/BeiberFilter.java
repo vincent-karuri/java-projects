@@ -3,16 +3,14 @@ package org.interview.oauth.twitter;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
+import javafx.util.Pair;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class BeiberFilter {
 
@@ -26,22 +24,23 @@ public class BeiberFilter {
     public void filter() {
         Map<Long, PriorityQueue<Tweet>> userToMessages = new HashMap<>();
         PriorityQueue<TwitterUser> users = new PriorityQueue();
-        filter(userToMessages, users);
+        Set<Long> userSet = new HashSet<>();
+
+        filter(userToMessages, users, userSet);
+        printFormattedOutput(users, userToMessages);
     }
 
-    private void filter(Map<Long, PriorityQueue<Tweet>>  usersToMessages, PriorityQueue<TwitterUser> users) {
+    private void filter(Map<Long, PriorityQueue<Tweet>>  usersToMessages, PriorityQueue<TwitterUser> users, Set<Long> userSet) {
 
+        Pair<PriorityQueue<TwitterUser>, Map<Long, PriorityQueue<Tweet>>> result = new Pair<>(users, usersToMessages);
         try {
             HttpRequestFactory requestFactory = authenticator.getAuthorizedHttpRequestFactory();
             HttpResponse response = requestFactory.buildGetRequest(BEIBER_FILTER_URL).execute();
 
             String resp = IOUtils.toString(response.getContent(), "UTF-8");
-
-            OUT.println(resp);
-
             JSONArray respJson = convertToJSONArray(resp);
             for (int i = 0; i < respJson.length(); i++) {
-                extractFields(respJson.getJSONObject(i));
+                extractAndSaveFields(respJson.getJSONObject(i), usersToMessages, users, userSet);
             }
         } catch (TwitterAuthenticationException e) {
             e.printStackTrace();
@@ -50,25 +49,63 @@ public class BeiberFilter {
         }
     }
 
+    private void extractAndSaveFields(JSONObject jsonObject, Map<Long, PriorityQueue<Tweet>>  usersToMessages, PriorityQueue<TwitterUser> users, Set<Long> userSet) {
+
+        Long userId = jsonObject.getJSONObject("user").getLong("id");
+        if (!userSet.contains(userId)) {
+            userSet.add(userId);
+            TwitterUser user = new TwitterUser(
+                    userId,
+                    new Date((String) jsonObject.getJSONObject("user").get("created_at")),
+                    jsonObject.getJSONObject("user").getString("screen_name")
+            );
+            users.add(user);
+            usersToMessages.put(userId, new PriorityQueue<Tweet>());
+        }
+
+        Tweet tweet = new Tweet(
+                jsonObject.getLong("id"),
+                jsonObject.getString("text"),
+                new Date ((String) jsonObject.get("created_at")),
+                jsonObject.getJSONObject("user").getLong("id")
+        );
+        PriorityQueue<Tweet> tweets = usersToMessages.get(userId);
+        tweets.add(tweet);
+        usersToMessages.put(userId, tweets);
+    }
+
     private JSONArray convertToJSONArray(String jsonString) {
         return new JSONObject(jsonString).getJSONArray("statuses");
     }
 
-    private void extractFields(JSONObject jsonObject) {
+    private void printFormattedOutput(PriorityQueue<TwitterUser> users, Map<Long, PriorityQueue<Tweet>> userToMessages) {
 
-        OUT.println();
-        OUT.println("Tweet info: ");
-        OUT.println(jsonObject.get("created_at"));
-        OUT.println(jsonObject.get("id"));
-        OUT.println(jsonObject.get("text"));
-        OUT.println(jsonObject.getJSONObject("user").get("id"));
+        for (TwitterUser user : users) {
+            for (Tweet tweet : userToMessages.get(user.getUserId())) {
+                // print user info
+                OUT.println();
+                OUT.println("User info:");
+                OUT.println();
+                OUT.println("id: " + user.getUserId());
+                OUT.println("screen name: " + user.getScreenName());
+                OUT.println("creation date: " + user.getCreationDate());
+                OUT.println();
 
-        OUT.println();
-        OUT.println("User info: ");
-        OUT.println(jsonObject.getJSONObject("user").get("id"));
-        OUT.println(jsonObject.getJSONObject("user").get("screen_name"));
-        OUT.println(jsonObject.getJSONObject("user").get("created_at"));
+                // print message info
+                OUT.println("Message info: ");
+                OUT.println();
+                OUT.println("message id: " + tweet.getMessageId());
+                OUT.println("message text: " + tweet.getMessage());
+                OUT.println("user id: " + tweet.getUserId());
+                OUT.println("creation date: " + tweet.getCreationDate());
+                OUT.println();
+
+                OUT.println("===================");
+            }
+        }
     }
+
+    /**************** INNER CLASSES *****************/
 
     private class Tweet implements Comparable<Tweet> {
 
@@ -86,6 +123,18 @@ public class BeiberFilter {
 
         public Date getCreationDate() {
             return creationDate;
+        }
+
+        public Long getMessageId() {
+            return messageId;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public Long getUserId() {
+            return userId;
         }
 
         public int compareTo(Tweet tweet2) {
@@ -109,13 +158,20 @@ public class BeiberFilter {
             return creationDate;
         }
 
+        public Long getUserId() {
+            return userId;
+        }
+
+        public String getScreenName() {
+            return screenName;
+        }
+
         public int compareTo(TwitterUser tweetUser2) {
             return this.getCreationDate().compareTo(tweetUser2.getCreationDate());
         }
     }
 
     public static void main(String[] args) {
-
         BeiberFilter beiberFilter = new BeiberFilter();
         beiberFilter.filter();
     }
