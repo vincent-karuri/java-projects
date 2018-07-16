@@ -115,8 +115,11 @@ public class BeiberFilter {
                 OUT.println("creation_date: " + tweet.getCreationDate());
                 OUT.println();
 
-                OUT.println("===================");
+                if (!tweets.isEmpty()) {
+                    OUT.println("*******************");
+                }
             }
+            OUT.println("===================");
         }
     }
 
