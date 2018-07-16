@@ -1,27 +1,29 @@
 package org.interview.oauth.twitter;
 
 import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
-import javafx.util.Pair;
-import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class BeiberFilter {
 
     private final String CONSUMER_KEY = "vp8qXAMoZzy6jowJdtouPLUUb";
     private final String CONSUMER_SECRET = "IMx3eIRfXXbRimoIz7cNpZCl0dr9dYEdRuDVTr2C4LdResXjN7";
-    private final GenericUrl BEIBER_FILTER_URL = new GenericUrl("https://api.twitter.com/1.1/search/tweets.json?q=twitterdev&src=typd");
+    private final GenericUrl BEIBER_FILTER_URL = new GenericUrl("https://stream.twitter.com/1.1/statuses/filter.json?track=bieber");
+    private final int TIME_LAPSE = 30000;
+    private final int MSG_LIMIT = 100;
 
     private final PrintStream OUT = new PrintStream(System.out);
     private TwitterAuthenticator authenticator = new TwitterAuthenticator(OUT, CONSUMER_KEY, CONSUMER_SECRET);
 
     public void filter() {
+
         Map<Long, PriorityQueue<Tweet>> userToMessages = new HashMap<>();
         PriorityQueue<TwitterUser> users = new PriorityQueue();
         Set<Long> userSet = new HashSet<>();
@@ -32,16 +34,28 @@ public class BeiberFilter {
 
     private void filter(Map<Long, PriorityQueue<Tweet>>  usersToMessages, PriorityQueue<TwitterUser> users, Set<Long> userSet) {
 
-        Pair<PriorityQueue<TwitterUser>, Map<Long, PriorityQueue<Tweet>>> result = new Pair<>(users, usersToMessages);
         try {
             HttpRequestFactory requestFactory = authenticator.getAuthorizedHttpRequestFactory();
-            HttpResponse response = requestFactory.buildGetRequest(BEIBER_FILTER_URL).execute();
+            HttpRequest request = requestFactory.buildGetRequest(BEIBER_FILTER_URL).setNumberOfRetries(5);
+            HttpResponse response = request.execute();
 
-            String resp = IOUtils.toString(response.getContent(), "UTF-8");
-            JSONArray respJson = convertToJSONArray(resp);
-            for (int i = 0; i < respJson.length(); i++) {
-                extractAndSaveFields(respJson.getJSONObject(i), usersToMessages, users, userSet);
+            Scanner scanner = new Scanner(response.getContent(), "UTF-8");
+
+            long start = System.currentTimeMillis();
+            long timeElapsed = 0;
+            List<String> tweets = new ArrayList<>();
+            while (scanner.hasNextLine() && tweets.size() < MSG_LIMIT && timeElapsed < TIME_LAPSE) {
+                String status = scanner.nextLine();
+                tweets.add(status);
+                // calculate time difference
+                long finish = System.currentTimeMillis();
+                timeElapsed = finish - start;
             }
+
+            for (int i = 0; i < tweets.size(); i++) {
+                extractAndSaveFields(new JSONObject(tweets.get(i)), usersToMessages, users, userSet);
+            }
+            response.disconnect();
         } catch (TwitterAuthenticationException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -56,17 +70,17 @@ public class BeiberFilter {
             userSet.add(userId);
             TwitterUser user = new TwitterUser(
                     userId,
-                    new Date((String) jsonObject.getJSONObject("user").get("created_at")),
+                    formatDate(jsonObject.getJSONObject("user").getString("created_at")),
                     jsonObject.getJSONObject("user").getString("screen_name")
             );
             users.add(user);
-            usersToMessages.put(userId, new PriorityQueue<Tweet>());
+            usersToMessages.put(userId, new PriorityQueue<>());
         }
 
         Tweet tweet = new Tweet(
                 jsonObject.getLong("id"),
                 jsonObject.getString("text"),
-                new Date ((String) jsonObject.get("created_at")),
+                formatDate(jsonObject.getString("created_at")),
                 jsonObject.getJSONObject("user").getLong("id")
         );
         PriorityQueue<Tweet> tweets = usersToMessages.get(userId);
@@ -74,36 +88,49 @@ public class BeiberFilter {
         usersToMessages.put(userId, tweets);
     }
 
-    private JSONArray convertToJSONArray(String jsonString) {
-        return new JSONObject(jsonString).getJSONArray("statuses");
-    }
-
     private void printFormattedOutput(PriorityQueue<TwitterUser> users, Map<Long, PriorityQueue<Tweet>> userToMessages) {
 
-        for (TwitterUser user : users) {
-            for (Tweet tweet : userToMessages.get(user.getUserId())) {
+        while (!users.isEmpty()) {
+
+            TwitterUser user = users.poll();
+            PriorityQueue<Tweet> tweets = userToMessages.get(user.getUserId());
+            while (!tweets.isEmpty()) {
+                Tweet tweet = tweets.poll();
+
                 // print user info
                 OUT.println();
                 OUT.println("User info:");
                 OUT.println();
                 OUT.println("id: " + user.getUserId());
-                OUT.println("screen name: " + user.getScreenName());
-                OUT.println("creation date: " + user.getCreationDate());
+                OUT.println("screen_name: " + user.getScreenName());
+                OUT.println("creation_date: " + user.getCreationDate());
                 OUT.println();
 
                 // print message info
                 OUT.println("Message info: ");
                 OUT.println();
-                OUT.println("message id: " + tweet.getMessageId());
-                OUT.println("message text: " + tweet.getMessage());
-                OUT.println("user id: " + tweet.getUserId());
-                OUT.println("creation date: " + tweet.getCreationDate());
+                OUT.println("message_id: " + tweet.getMessageId());
+                OUT.println("message_text: " + tweet.getMessage());
+                OUT.println("user_id: " + tweet.getUserId());
+                OUT.println("creation_date: " + tweet.getCreationDate());
                 OUT.println();
 
                 OUT.println("===================");
             }
         }
     }
+
+    private Date formatDate(String dateString) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
+        try {
+            return dateFormat.parse(dateString);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     /**************** INNER CLASSES *****************/
 
