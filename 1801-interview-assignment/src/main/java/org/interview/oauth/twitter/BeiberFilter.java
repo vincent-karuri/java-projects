@@ -16,7 +16,7 @@ public class BeiberFilter {
     private final String CONSUMER_KEY = "vp8qXAMoZzy6jowJdtouPLUUb";
     private final String CONSUMER_SECRET = "IMx3eIRfXXbRimoIz7cNpZCl0dr9dYEdRuDVTr2C4LdResXjN7";
     private final GenericUrl BEIBER_FILTER_URL = new GenericUrl("https://stream.twitter.com/1.1/statuses/filter.json?track=bieber");
-    private final int TIME_LAPSE = 30000;
+    private final int TIME_LAPSE_LIMIT = 30000;
     private final int MSG_LIMIT = 100;
 
     private final PrintStream OUT = new PrintStream(System.out);
@@ -44,9 +44,9 @@ public class BeiberFilter {
             long start = System.currentTimeMillis();
             long timeElapsed = 0;
             List<String> tweets = new ArrayList<>();
-            while (scanner.hasNextLine() && tweets.size() < MSG_LIMIT && timeElapsed < TIME_LAPSE) {
-                String status = scanner.nextLine();
-                tweets.add(status);
+            while (scanner.hasNextLine() && tweets.size() < MSG_LIMIT && timeElapsed < TIME_LAPSE_LIMIT) {
+                String tweet = scanner.nextLine();
+                tweets.add(tweet);
                 // calculate time difference
                 long finish = System.currentTimeMillis();
                 timeElapsed = finish - start;
@@ -91,7 +91,6 @@ public class BeiberFilter {
     private void printFormattedOutput(PriorityQueue<TwitterUser> users, Map<Long, PriorityQueue<Tweet>> userToMessages) {
 
         while (!users.isEmpty()) {
-
             TwitterUser user = users.poll();
             PriorityQueue<Tweet> tweets = userToMessages.get(user.getUserId());
             while (!tweets.isEmpty()) {
@@ -196,8 +195,8 @@ public class BeiberFilter {
             return screenName;
         }
 
-        public int compareTo(TwitterUser tweetUser2) {
-            return this.getCreationDate().compareTo(tweetUser2.getCreationDate());
+        public int compareTo(TwitterUser twitterUser2) {
+            return this.getCreationDate().compareTo(twitterUser2.getCreationDate());
         }
     }
 
