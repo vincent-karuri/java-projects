@@ -1,6 +1,6 @@
 # Loan Aggregator 
 
-The LoanAggregator#aggregateLoans method takes a String path-name (absolute or relative to LoanAggregator's current path) 
+The `LoanAggregator#aggregateLoans` method takes a String path-name (absolute or relative to LoanAggregator's current path) 
 to a csv file and processes the file, providing an aggregation of loan amounts based on a tuple key (Network, Product, Month)
 which can be specified by the client.
 
@@ -23,8 +23,9 @@ integrity is to the application.
 
 The implementation uses a HashMap to allow fast (constant time) lookups when updating tuple amounts.
 
-This solution can be scaled to support other formats e.g. Excel or PDF. For example, an Adapter class can be written 
+This solution can be extended to support other formats e.g. Excel or PDF. For example, an Adapter class can be written 
 to convert the Excel or PDF to CSV and the same LoanAggregator class can be used to perform the aggregations.
 
-Additionally, if the aggregations needed to done by a different tuple, one can specify the position of the required 
-tuple values via the constants at the top of the LoanAggregator class. The tuple lengths can also be adjusted in a similar way.
+Additionally, if the aggregations need to done on a different tuple, one can specify the required 
+tuple values via constants at the top of the `LoanAggregator#parseCsvFile` method. The tuple lengths and offsets can also be 
+adjusted in a similar way.
