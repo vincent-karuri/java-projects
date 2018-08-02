@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -95,7 +96,9 @@ public class LoanAggregator {
             writer.write("\n");
             for (Map.Entry<String, Double> entry : tupleToAggregateAmount.entrySet()) {
                 String[] tuple = entry.getKey().split("\\+");
-                double amount = entry.getValue();
+                DecimalFormat decimalFormat = new DecimalFormat("#.00");
+                String amount = decimalFormat.format(entry.getValue());
+
                 writer.write(tuple[0] + "," + tuple[1] + "," + tuple[2] + "," + amount);
                 writer.write("\n");
             }

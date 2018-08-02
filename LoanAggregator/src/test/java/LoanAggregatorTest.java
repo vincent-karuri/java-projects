@@ -31,14 +31,14 @@ public class LoanAggregatorTest {
     public void testCorrectOutputIsWrittenToFileWhenCsvFormatIsCorrect() throws InvalidFormatException {
 
         Set<String> expectedResults = new HashSet<>();
-        expectedResults.add("1,1,Mar,1000.0");
-        expectedResults.add("2,1,Mar,2611.0");
-        expectedResults.add("3,2,Mar,17653.0");
-        expectedResults.add("2,1,Apr,5671.0");
-        expectedResults.add("3,3,Apr,1928.0");
-        expectedResults.add("2,3,Apr,4700.0");
-        expectedResults.add("2,1,Apr,5671.0");
-        expectedResults.add("1,2,Apr,1801.0");
+        expectedResults.add("1,1,Mar,1000.00");
+        expectedResults.add("2,1,Mar,2611.00");
+        expectedResults.add("3,2,Mar,17653.88");
+        expectedResults.add("2,1,Apr,5671.00");
+        expectedResults.add("3,3,Apr,1928.00");
+        expectedResults.add("2,3,Apr,4700.78");
+        expectedResults.add("2,1,Apr,5671.00");
+        expectedResults.add("1,2,Apr,1801.00");
 
         assertTrue(validateResults(expectedResults, "test-file-correct-format.csv"));
     }

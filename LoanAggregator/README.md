@@ -1,0 +1,30 @@
+# Loan Aggregator 
+
+The LoanAggregator#aggregateLoans method takes a String path-name (absolute or relative to LoanAggregator's current path) 
+to a csv file and processes the file, providing an aggregation of loan amounts based on a tuple key (Network, Product, Month)
+which can be specified by the client.
+
+The result is then written to a csv file OUTPUT_CSV_FILE path (absolute or relative to LoanAggregator's current path)
+which can be specified by the client.
+
+## Assumptions 
+
+- File is in CSV format.
+- File has correct permissions to be read.
+- File is in correct format for each of its rows. If not, an IllegalFormatException is thrown. An alternative might have 
+been to skip 'dirty' rows and create some report of this but it all depends on how important the overall document 
+integrity is to the application.
+
+## Implementation
+
+- This solution is written in Java using JUnit for testing and Maven for dependency management.
+
+## Scale and performance considerations
+
+The implementation uses a HashMap to allow fast (constant time) lookups when updating tuple amounts.
+
+This solution can be scaled to support other formats e.g. Excel or PDF. For example, an Adapter class can be written 
+to convert the Excel or PDF to CSV and the same LoanAggregator class can be used to perform the aggregations.
+
+Additionally, if the aggregations needed to done by a different tuple, one can specify the position of the required 
+tuple values via the constants at the top of the LoanAggregator class. The tuple lengths can also be adjusted in a similar way.
