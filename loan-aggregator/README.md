@@ -1,11 +1,9 @@
 # Loan Aggregator 
 
 The `LoanAggregator#aggregateLoans` method takes a String path-name (absolute or relative to LoanAggregator's current path) 
-to a csv file and processes the file, providing an aggregation of loan amounts based on a tuple key (Network, Product, Month)
-which can be specified by the client.
+to a csv file and processes the file, providing an aggregation of loan amounts based on a tuple key (Network, Product, Month).
 
-The result is then written to a csv file OUTPUT_CSV_FILE (absolute or relative to LoanAggregator's current path)
-which can be specified by the client.
+The result is then written to a csv file OUTPUT_CSV_FILE (absolute or relative to LoanAggregator's current path).
 
 ## Assumptions 
 
