@@ -134,8 +134,10 @@ public class LoanAggregatorTest {
             }
             actualResults.add(currRow);
         }
-        scanner.close();
 
+        if (scanner != null) {
+            scanner.close();
+        }
         return expectedResults.size() == actualResults.size();
     }
 }
