@@ -1,4 +1,4 @@
-package main.java;
+package main;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,7 +24,8 @@ public class LogToJSONParser {
         try {
             scanner = new Scanner(new File(logFilePath));
         } catch (FileNotFoundException e) {
-            // usually log error
+            // usually I'd log error
+            System.out.println(e.getMessage());
             return;
         }
 
@@ -50,7 +51,8 @@ public class LogToJSONParser {
         try {
             date = sdf.parse(dateTime);
         } catch (ParseException e) {
-            // usually log error
+            // usually I'd log error
+            System.out.println(e.getMessage());
             return new LinkedHashMap<>();
         }
         Long epochTimeStamp = date.getTime();
@@ -99,6 +101,6 @@ public class LogToJSONParser {
     }
 
     public static void main(String[] args) {
-        parseLogsToJson("resources/logs.txt");
+        parseLogsToJson("main/logs.txt");
     }
 }
