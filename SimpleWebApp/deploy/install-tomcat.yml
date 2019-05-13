@@ -1,4 +1,9 @@
-- hosts: ubuntu-test-vm
+- hosts: all
+  become: true
+  gather_facts: false
+  pre_tasks:
+    - name: Install Python 2
+      raw: sudo apt-get -y install python
 
   vars_files:
     - secret
@@ -9,7 +14,7 @@
       apt:
         upgrade: yes
         update_cache: yes
-    
+   
     - name: Install Tomcat 7
       become: true
       apt:
