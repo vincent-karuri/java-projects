@@ -23,3 +23,9 @@
           - tomcat7-docs
           - tomcat7-examples
           - tomcat7-admin
+
+    - name: Start Tomcat 7 daemon
+      become: true
+      service:
+        name: tomcat7
+        state: started
