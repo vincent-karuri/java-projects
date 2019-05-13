@@ -1,3 +1,25 @@
 - hosts: ubuntu-test-vm
-  become: true
-  become_user: ubuntu
+
+  vars_files:
+    - secret
+
+  tasks:
+    - name: Update and upgrade apt packages
+      become: true
+      apt:
+        upgrade: yes
+        update_cache: yes
+    
+    - name: Install Tomcat 7
+      become: true
+      apt:
+        name: tomcat7
+
+    - name: Install Tomcat 7 tools
+      become: true
+      apt: name={{tomcat7_tools}}
+      vars:
+        tomcat7_tools:
+          - tomcat7-docs
+          - tomcat7-examples
+          - tomcat7-admin
