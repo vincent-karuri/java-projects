@@ -48,6 +48,13 @@
         name: tomcat7
         state: started
 
+    - name: Add user ubuntu to tomcat7 group
+      become: true
+      user: 
+        name: ubuntu
+        groups: tomcat7
+        append: yes
+  
   handlers:
-  - name: restart Tomcat 7
-    action: service name=tomcat7 state=restarted
+    - name: restart Tomcat 7
+      action: service name=tomcat7 state=restarted
