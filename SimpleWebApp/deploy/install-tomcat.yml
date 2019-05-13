@@ -24,8 +24,30 @@
           - tomcat7-examples
           - tomcat7-admin
 
+    - name: Copy tomcat7 config file
+      become: true
+      action: template src=../src/main/webapp/WEB-INF/tomcat7 dest=/etc/default/tomcat7
+      notify: 
+        - restart Tomcat 7
+
+    - name: Copy tomcat-users config file
+      become: true
+      action: template src=../src/main/webapp/WEB-INF/tomcat-users.xml dest=/var/lib/tomcat7/conf/tomcat-users.xml
+      notify: 
+        - restart Tomcat 7
+
+    - name: Copy server.xml config file
+      become: true
+      action: template src=../src/main/webapp/WEB-INF/server.xml dest=/var/lib/tomcat7/conf/server.xml
+      notify: 
+        - restart Tomcat 7
+
     - name: Start Tomcat 7 daemon
       become: true
       service:
         name: tomcat7
         state: started
+
+  handlers:
+  - name: restart Tomcat 7
+    action: service name=tomcat7 state=restarted
