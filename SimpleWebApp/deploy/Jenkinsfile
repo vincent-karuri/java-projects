@@ -1,9 +1,22 @@
 pipeline {
     agent any
+    options {
+        skipStagesAfterUnstable()
+    }
     stages {
         stage('Build') { 
             steps {
                 sh 'mvn -B -DskipTests clean package -f SimpleWebApp/' 
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn test -f SimpleWebApp/'
+            }
+        }
+        stage('Deploy') {
+            steps {
+               sh 'scp SimpleWebApp/target/simple-web-app.war ubuntu@192.168.0.25:/var/lib/tomcat7/webapps'                
             }
         }
     }
