@@ -28,7 +28,7 @@
   "provisioners": [
     {
       "type": "ansible",
-      "playbook_file": "../install-tomcat.yml"
+      "playbook_file": "../ansible/install-tomcat.yml"
     }
   ]
 }
