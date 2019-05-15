@@ -8,5 +8,7 @@ The project also includes configuration files that can be used when deploying th
 
 The project also contains Packer and Ansible scripts that can be used to build an AWS AMI with Tomcat installed, configured and running on port 80. A Jenkins file, which can be used to automate builds from git branches and to deploy the resulting war file to a running server, is also included.
 
+Example terraform scripts that can build network infrastructure and deploy an AWS instance based on the above AMI can be found [here](https://github.com/vincent-karuri/DevOps/tree/master/ansible-packer-terraform-nginx).
+
 Other references when installing tomcat on Ubuntu are [here](https://www.linode.com/docs/development/frameworks/apache-tomcat-on-ubuntu-16-04/), [here](https://brianflove.com/2014/06/04/simple-tomcat7-install-on-ubuntu-10/), [here](https://askubuntu.com/questions/1067160/tomcat-7-as-a-service-under-systemctl-in-18-04-configurationsolved
 ), [here](https://askubuntu.com/a/314614), [here](https://askubuntu.com/a/703674) and [here](https://askubuntu.com/a/79566).
