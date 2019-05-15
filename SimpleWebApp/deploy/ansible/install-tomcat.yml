@@ -31,19 +31,19 @@
 
     - name: Copy tomcat7 config file
       become: true
-      action: template src=../src/main/webapp/WEB-INF/tomcat7 dest=/etc/default/tomcat7
+      action: template src=../../src/main/webapp/WEB-INF/tomcat7 dest=/etc/default/tomcat7
       notify: 
         - restart Tomcat 7
 
     - name: Copy tomcat-users config file
       become: true
-      action: template src=../src/main/webapp/WEB-INF/tomcat-users.xml dest=/var/lib/tomcat7/conf/tomcat-users.xml
+      action: template src=../../src/main/webapp/WEB-INF/tomcat-users.xml dest=/var/lib/tomcat7/conf/tomcat-users.xml
       notify: 
         - restart Tomcat 7
 
     - name: Copy server.xml config file
       become: true
-      action: template src=../src/main/webapp/WEB-INF/server.xml dest=/var/lib/tomcat7/conf/server.xml
+      action: template src=../../src/main/webapp/WEB-INF/server.xml dest=/var/lib/tomcat7/conf/server.xml
       notify: 
         - restart Tomcat 7
 
