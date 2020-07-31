@@ -37,6 +37,7 @@ captures/
 # IntelliJ
 *.iml
 **/.idea/
+**/target/
 
 
 # Android Studio 3 in .gitignore file.
@@ -82,3 +83,4 @@ lint/reports/*.iml
 jacoco.exec
 
 .DS_Store
+HELP.md
