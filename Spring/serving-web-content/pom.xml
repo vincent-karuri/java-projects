@@ -11,7 +11,7 @@
 	<groupId>com.example</groupId>
 	<artifactId>serving-web-content</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>sample-web-app</name>
 	<description>Sample web app using Spring Boot</description>
 
