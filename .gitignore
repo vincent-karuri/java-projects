@@ -37,7 +37,7 @@ captures/
 # IntelliJ
 *.iml
 **/.idea/
-
+**/target/
 
 # Android Studio 3 in .gitignore file.
 .idea/caches

@@ -12,7 +12,7 @@ import javax.servlet.ServletRegistration;
 
 public class MainWebApplicationInitializer implements WebApplicationInitializer {
 
-    public void onStartup(ServletContext servletContext) throws ServletException {
+    public void onStartup(ServletContext servletContext) {
         AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
         applicationContext.register(WebConfig.class);
         servletContext.addListener(new ContextLoaderListener(applicationContext));

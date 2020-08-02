@@ -7,10 +7,14 @@
     <groupId>org.example</groupId>
     <artifactId>spring-mvc-5-intro</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <properties>
         <org.springframework.version>5.2.8.RELEASE</org.springframework.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.war.plugin.version>3.2.3</maven.war.plugin.version>
     </properties>
 
     <dependencies>
@@ -26,4 +30,14 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>spring-mvc-5-webapp</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${maven.war.plugin.version}</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>
