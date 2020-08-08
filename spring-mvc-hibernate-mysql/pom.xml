@@ -33,7 +33,6 @@
       <version>5.2.12.Final</version>
     </dependency>
 
-
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>
@@ -44,6 +43,12 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-orm</artifactId>
       <version>5.0.2.RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+      <version>5.0.0.RELEASE</version>
     </dependency>
   </dependencies>
 
