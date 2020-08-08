@@ -11,7 +11,7 @@ import java.security.Principal;
  */
 
 @Controller
-public class UserContoller {
+public class UserController {
 
 	@GetMapping("/")
 	public String index(Model model, Principal principal) {
