@@ -14,17 +14,17 @@ import java.util.Set;
  */
 
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 public class User {
 
 	@Id
-	@Column(name = "USERNAME")
+	@Column(name = "username")
 	private String userName;
 
-	@Column(name = "PASSWORD", nullable = false)
+	@Column(name = "password", nullable = false)
 	private String password;
 
-	@Column(name = "ENABLED", nullable = false)
+	@Column(name = "enabled", nullable = false)
 	private boolean enabled;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")

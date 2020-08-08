@@ -12,15 +12,15 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "AUTHORITIES")
+@Table(name = "authorities")
 public class Authorities {
 
 	@Id
-	@Column(name = "AUTHORITY")
+	@Column(name = "authority")
 	private String authority;
 
 	@ManyToOne
-	@JoinColumn(name = "USERNAME")
+	@JoinColumn(name = "username")
 	private User user;
 
 	public String getAuthority() {

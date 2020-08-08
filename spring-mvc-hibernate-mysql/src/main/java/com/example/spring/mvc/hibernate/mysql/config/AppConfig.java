@@ -2,6 +2,7 @@ package com.example.spring.mvc.hibernate.mysql.config;
 
 import com.example.spring.mvc.hibernate.mysql.entity.Authorities;
 import com.example.spring.mvc.hibernate.mysql.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ import static org.hibernate.cfg.AvailableSettings.*;
 @ComponentScan("com.example.spring.mvc.hibernate.mysql")
 public class AppConfig {
 
+	@Autowired
 	private Environment environment;
 
 	@Bean
@@ -34,7 +36,7 @@ public class AppConfig {
 
 		// Setting JDBC properties
 		properties.put(DRIVER, environment.getProperty("mysql.driver"));
-		properties.put(URL, environment.getProperty("mysql.jdbcUrl"));
+		properties.put(URL, environment.getProperty("mysql.jdbc.url"));
 		properties.put(USER, environment.getProperty("mysql.username"));
 		properties.put(PASS, environment.getProperty("mysql.password"));
 
