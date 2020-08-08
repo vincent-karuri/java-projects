@@ -1,5 +1,6 @@
 package com.example.spring.mvc.hibernate.mysql.config;
 
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableWebMvc
 @Configuration
+@ComponentScan("com.example.spring.mvc.hibernate.mysql.controller")
 public class WebConfig implements WebMvcConfigurer {
 
 	@Override
