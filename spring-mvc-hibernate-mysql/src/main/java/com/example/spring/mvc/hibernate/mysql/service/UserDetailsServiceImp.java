@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by Vincent Karuri on 08/08/2020
  */
 
-@Service("userDetailsService")
+@Service
 public class UserDetailsServiceImp implements UserDetailsService {
 
 	@Autowired

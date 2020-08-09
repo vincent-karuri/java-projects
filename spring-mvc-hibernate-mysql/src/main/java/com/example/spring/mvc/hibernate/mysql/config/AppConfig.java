@@ -1,13 +1,12 @@
 package com.example.spring.mvc.hibernate.mysql.config;
 
-import com.example.spring.mvc.hibernate.mysql.controller.UserController;
 import com.example.spring.mvc.hibernate.mysql.entity.Authorities;
 import com.example.spring.mvc.hibernate.mysql.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -35,9 +34,8 @@ import static org.hibernate.cfg.AvailableSettings.USER;
 @Configuration
 @PropertySource("classpath:db.properties")
 @EnableTransactionManagement
-@ComponentScan(basePackages = "com.example.spring.mvc.hibernate.mysql",
-		excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,
-				pattern = "com\\.example\\.spring\\.mvc\\.hibernate\\.mysql\\.controller\\.*"))
+@ComponentScans(value = { @ComponentScan("com.example.spring.mvc.hibernate.mysql.service"),
+		@ComponentScan("com.example.spring.mvc.hibernate.mysql.repository") })
 public class AppConfig {
 	@Autowired
 	private Environment environment;
