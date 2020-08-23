@@ -1,5 +1,6 @@
 package com.example.spring.boot.hibernate.security.springboothibernatesecurity.config;
 
+import com.example.spring.boot.hibernate.security.springboothibernatesecurity.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
